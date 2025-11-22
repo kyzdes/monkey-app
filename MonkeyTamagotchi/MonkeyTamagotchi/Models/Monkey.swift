@@ -24,11 +24,17 @@ class Monkey: Codable, Identifiable, ObservableObject {
     @Published var isSleeping: Bool
     @Published var currentActivity: Activity?
 
+    // v2.0 features
+    @Published var genetics: GeneticTraits?
+    @Published var profession: Profession?
+    @Published var careerProgress: CareerProgress?
+
     enum CodingKeys: String, CodingKey {
         case id, name, type, stats, age, level, experience, coins
         case mood, stage, personalityTraits, learnedTricks, inventory
         case equippedItems, habitatStyle, lastFed, lastPlayed
         case lastCleaned, lastSlept, isSleeping, currentActivity
+        case genetics, profession, careerProgress
     }
 
     init(name: String, type: MonkeyType) {
@@ -53,6 +59,36 @@ class Monkey: Codable, Identifiable, ObservableObject {
         self.lastSlept = Date()
         self.isSleeping = false
         self.currentActivity = nil
+        self.genetics = nil
+        self.profession = nil
+        self.careerProgress = nil
+    }
+
+    init(name: String, type: MonkeyType, stats: MonkeyStats) {
+        self.id = UUID()
+        self.name = name
+        self.type = type
+        self.stats = stats
+        self.age = 0
+        self.level = 1
+        self.experience = 0
+        self.coins = 100
+        self.mood = .happy
+        self.stage = .baby
+        self.personalityTraits = []
+        self.learnedTricks = []
+        self.inventory = []
+        self.equippedItems = [:]
+        self.habitatStyle = .jungle
+        self.lastFed = Date()
+        self.lastPlayed = Date()
+        self.lastCleaned = Date()
+        self.lastSlept = Date()
+        self.isSleeping = false
+        self.currentActivity = nil
+        self.genetics = nil
+        self.profession = nil
+        self.careerProgress = nil
     }
 
     required init(from decoder: Decoder) throws {
@@ -78,6 +114,9 @@ class Monkey: Codable, Identifiable, ObservableObject {
         lastSlept = try container.decode(Date.self, forKey: .lastSlept)
         isSleeping = try container.decode(Bool.self, forKey: .isSleeping)
         currentActivity = try container.decodeIfPresent(Activity.self, forKey: .currentActivity)
+        genetics = try container.decodeIfPresent(GeneticTraits.self, forKey: .genetics)
+        profession = try container.decodeIfPresent(Profession.self, forKey: .profession)
+        careerProgress = try container.decodeIfPresent(CareerProgress.self, forKey: .careerProgress)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -103,6 +142,9 @@ class Monkey: Codable, Identifiable, ObservableObject {
         try container.encode(lastSlept, forKey: .lastSlept)
         try container.encode(isSleeping, forKey: .isSleeping)
         try container.encode(currentActivity, forKey: .currentActivity)
+        try container.encode(genetics, forKey: .genetics)
+        try container.encode(profession, forKey: .profession)
+        try container.encode(careerProgress, forKey: .careerProgress)
     }
 
     func addExperience(_ amount: Int) {
